@@ -1,0 +1,84 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MovieApi.DataBaseContext;
+using MovieApi.Interface;
+using MovieApi.Model;
+using MovieApi.Requests;
+
+namespace MovieApi.Services
+{
+    public class MovieService : IMovieInterface
+    {
+        private readonly ContextDb _context;
+        public MovieService(ContextDb context)
+        {
+            _context = context;
+        }
+
+        public async Task<IActionResult> CreateNewMovieAsync(CreateNewMovie MovieInfo)
+        {
+            var movie = new Movies()
+            {
+                Name = MovieInfo.Name,
+                Description = MovieInfo.Description,
+                Genre = MovieInfo.Genre,
+                PublishingDate = MovieInfo.PublishingDate,
+                Rating = MovieInfo.Rating
+            };
+            await _context.Movies.AddAsync(movie);
+            await _context.SaveChangesAsync();
+            return new OkObjectResult(new
+            {
+                status = true
+            });
+        }
+
+        public async Task<bool> DeleteMovieAsync(int id)
+        {
+            var movie = await _context.Movies.FindAsync(id);
+            if (movie == null)
+            {
+                return false;
+            }
+            _context.Movies.Remove(movie);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<IActionResult> GetAllMoviesAsync()
+        {
+            var movies = await _context.Movies.ToListAsync();
+            return new OkObjectResult(new
+            {
+                data = new { movies = movies },
+                status = true
+            });
+        }
+
+        public async Task<Movies> GetMovieInfoAsync(int id)
+        {
+            var movie = await _context.Movies.FindAsync(id);
+            if (movie == null)
+            {
+                return null;
+            }
+            return movie;
+        }
+
+        public async Task<Movies> UpdateMovieAsync(int id, CreateNewMovie MovieInfo)
+        {
+            var movie = await _context.Movies.FindAsync(id);
+            if (movie == null)
+            {
+                return null;
+            }
+            movie.Name = MovieInfo.Name ?? movie.Name;
+            movie.Description = MovieInfo.Description ?? movie.Description;
+            movie.Genre = MovieInfo.Genre ?? movie.Genre;
+            movie.PublishingDate = MovieInfo.PublishingDate;
+            movie.Rating = MovieInfo.Rating;
+            await _context.SaveChangesAsync();
+            return movie;
+        }
+    }
+}
