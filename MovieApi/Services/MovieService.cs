@@ -15,6 +15,22 @@ namespace MovieApi.Services
             _context = context;
         }
 
+        public async Task<AuthUser> Authorization(LoginModel data)
+        {
+            var log = await _context.Logins.Where(x => x.login == data.Login && x.password == data.Password).FirstOrDefaultAsync();
+            Users user = await _context.Users.Where(x => x.ID_User == log.ID_User).FirstOrDefaultAsync();
+            AuthUser au = new AuthUser()
+            {
+                ID_User = log.ID_User,
+                Name = user.Name,
+                Description = user.Description,
+                ID_Role = user.ID_Role,
+                login = data.Login,
+                password = data.Password
+            };
+            return au;
+        }
+
         public async Task<IActionResult> CreateNewMovieAsync(CreateNewMovie MovieInfo)
         {
             var movie = new Movies()
@@ -65,6 +81,26 @@ namespace MovieApi.Services
             return movie;
         }
 
+        public async Task<Users> Registration(AuthUser user)
+        {
+            Users us = new Users() {
+            Name = user.Name,
+            Description = user.Description,
+            ID_Role = user.ID_Role
+            };
+            await _context.Users.AddAsync(us);
+            await _context.SaveChangesAsync();
+            Logins log = new Logins()
+            {
+                login = user.login,
+                password = user.password,
+                ID_User = us.ID_User
+            };
+            await _context.Logins.AddAsync(log);
+            await _context.SaveChangesAsync();
+            return us;
+        }
+
         public async Task<Movies> UpdateMovieAsync(int id, CreateNewMovie MovieInfo)
         {
             var movie = await _context.Movies.FindAsync(id);
@@ -75,7 +111,7 @@ namespace MovieApi.Services
             movie.Name = MovieInfo.Name ?? movie.Name;
             movie.Description = MovieInfo.Description ?? movie.Description;
             movie.Genre = MovieInfo.Genre ?? movie.Genre;
-            movie.PublishingDate = MovieInfo.PublishingDate;
+            movie.PublishingDate = MovieInfo.PublishingDate;s
             movie.Rating = MovieInfo.Rating;
             await _context.SaveChangesAsync();
             return movie;

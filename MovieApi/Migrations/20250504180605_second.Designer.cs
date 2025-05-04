@@ -12,15 +12,15 @@ using MovieApi.DataBaseContext;
 namespace MovieApi.Migrations
 {
     [DbContext(typeof(ContextDb))]
-    [Migration("20250216174801_first")]
-    partial class first
+    [Migration("20250504180605_second")]
+    partial class second
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.2")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -90,6 +90,10 @@ namespace MovieApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID_Role"));
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ID_Role");
 
                     b.ToTable("Roles");
@@ -107,19 +111,16 @@ namespace MovieApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Id_Role")
+                    b.Property<int>("ID_Role")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("roleID_Role")
-                        .HasColumnType("int");
-
                     b.HasKey("ID_User");
 
-                    b.HasIndex("roleID_Role");
+                    b.HasIndex("ID_Role");
 
                     b.ToTable("Users");
                 });
@@ -137,13 +138,13 @@ namespace MovieApi.Migrations
 
             modelBuilder.Entity("MovieApi.Model.Users", b =>
                 {
-                    b.HasOne("MovieApi.Model.Roles", "role")
+                    b.HasOne("MovieApi.Model.Roles", "Roles")
                         .WithMany()
-                        .HasForeignKey("roleID_Role")
+                        .HasForeignKey("ID_Role")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("role");
+                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }

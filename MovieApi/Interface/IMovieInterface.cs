@@ -11,7 +11,7 @@ namespace MovieApi.Interface
         Task<IActionResult> CreateNewMovieAsync(CreateNewMovie MovieInfo);
         Task<Movies> UpdateMovieAsync(int id, CreateNewMovie MovieInfo);
         Task<bool> DeleteMovieAsync(int id);
-
-
+        Task<AuthUser> Authorization(LoginModel data);
+        Task<Users> Registration(AuthUser user);
     }
 }

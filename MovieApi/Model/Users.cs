@@ -10,10 +10,9 @@ namespace MovieApi.Model
         public int ID_User { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-
+        [Required]
         [ForeignKey("Roles")]
-
-        public int Id_Role { get; set; }
-        public Roles role { get; set; }
+        public int ID_Role { get; set; }
+        public Roles Roles { get; set; }
     }
 }

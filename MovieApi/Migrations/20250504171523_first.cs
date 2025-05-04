@@ -48,15 +48,14 @@ namespace MovieApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Id_Role = table.Column<int>(type: "int", nullable: false),
-                    roleID_Role = table.Column<int>(type: "int", nullable: false)
+                    ID_Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.ID_User);
                     table.ForeignKey(
-                        name: "FK_Users_Roles_roleID_Role",
-                        column: x => x.roleID_Role,
+                        name: "FK_Users_Roles_ID_Role",
+                        column: x => x.ID_Role,
                         principalTable: "Roles",
                         principalColumn: "ID_Role",
                         onDelete: ReferentialAction.Cascade);
@@ -89,9 +88,9 @@ namespace MovieApi.Migrations
                 column: "ID_User");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_roleID_Role",
+                name: "IX_Users_ID_Role",
                 table: "Users",
-                column: "roleID_Role");
+                column: "ID_Role");
         }
 
         /// <inheritdoc />

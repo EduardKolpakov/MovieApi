@@ -8,6 +8,6 @@ namespace MovieApi.Model
     {
         [Key]
         public int ID_Role { get; set; }
-        public string Role;
+        public string Role { get; set; }
     }
 }
