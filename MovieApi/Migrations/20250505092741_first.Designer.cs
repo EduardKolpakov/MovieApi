@@ -12,8 +12,8 @@ using MovieApi.DataBaseContext;
 namespace MovieApi.Migrations
 {
     [DbContext(typeof(ContextDb))]
-    [Migration("20250504180605_second")]
-    partial class second
+    [Migration("20250505092741_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

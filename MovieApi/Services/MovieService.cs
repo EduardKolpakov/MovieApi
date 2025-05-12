@@ -111,7 +111,7 @@ namespace MovieApi.Services
             movie.Name = MovieInfo.Name ?? movie.Name;
             movie.Description = MovieInfo.Description ?? movie.Description;
             movie.Genre = MovieInfo.Genre ?? movie.Genre;
-            movie.PublishingDate = MovieInfo.PublishingDate;s
+            movie.PublishingDate = MovieInfo.PublishingDate;
             movie.Rating = MovieInfo.Rating;
             await _context.SaveChangesAsync();
             return movie;

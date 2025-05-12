@@ -71,10 +71,15 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
 
 var app = builder.Build();
-
+app.UseRouting();
+app.UseCors(policy =>
+{
+    policy.AllowAnyOrigin()
+         .AllowAnyHeader()
+         .AllowAnyMethod();
+});
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
