@@ -113,8 +113,8 @@ namespace MovieApi.Controllers
             {
         new Claim(ClaimTypes.Name, username),
         new Claim("ID_Role", role.ToString()),
-        new Claim("Description", description),
-        new Claim("", )
+        new Claim("Description", description)//,
+        //new Claim("", )
 
     };
 
