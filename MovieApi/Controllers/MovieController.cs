@@ -60,35 +60,30 @@ namespace MovieApi.Controllers
                 }
             });
         }
-        [Authorize]
         [HttpGet]
         [Route("GetAllMovies")]
         public async Task<IActionResult> GetAllMovies()
         {
             return await _MovieService.GetAllMoviesAsync();
         }
-        [Authorize]
         [HttpGet]
         [Route("GetMovieInfo/{id}")]
         public async Task<Movies> GetMovies(int id)
         {
             return await _MovieService.GetMovieInfoAsync(id);
         }
-        [Authorize]
         [HttpPost]
         [Route("CreateNewMovie")]
         public async Task<IActionResult> CreateMovie(CreateNewMovie MovieInfo)
         {
             return await _MovieService.CreateNewMovieAsync(MovieInfo);
         }
-        [Authorize]
         [HttpDelete]
         [Route("DeleteMovie/{id}")]
         public async Task<bool> DeleteMovie(int id)
         {
             return await _MovieService.DeleteMovieAsync(id);
         }
-        [Authorize]
         [HttpPut]
         [Route("UpdateMovie/{id}")] //ПРИВЕТ ОТ КОД10!!!!!!
         public async Task<Movies> UpdateMovie(int id, string name, string description, string genre, DateOnly publishingDate, double rating)

@@ -20,7 +20,6 @@ builder.Services.AddDbContext<ContextDb>(options =>
 
 builder.Services.AddScoped<IMovieInterface, MovieService>();
 var jwtConfig = builder.Configuration.GetSection("Jwt");
-var key = Encoding.ASCII.GetBytes(jwtConfig["Key"]);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -33,10 +32,11 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtConfig["Issuer"],
-        ValidAudience = jwtConfig["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(key)
+        ValidateLifetime = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
     };
 });
 builder.Services.AddSwaggerGen(c =>
