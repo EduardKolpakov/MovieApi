@@ -31,7 +31,7 @@ namespace MovieApi.Controllers
             {
 
                 var authUser = await _MovieService.Authorization(data);
-                var token = GenerateJwtToken(authUser.Name, authUser.Description, authUser.ID_Role);
+                var token = GenerateJwtToken(authUser.ID_User, authUser.Name, authUser.Description, authUser.ID_Role);
 
                 return Ok(new { Token = token });
             }
@@ -42,11 +42,11 @@ namespace MovieApi.Controllers
         }
         [HttpPost]
         [Route("Registration")]
-        public async Task<IActionResult> Register([FromBody] AuthUser user)
+        public async Task<IActionResult> Register([FromBody] RegistrationRequestModel user)
         {
             var newUser = await _MovieService.Registration(user);
 
-            var token = GenerateJwtToken(newUser.Name, newUser.Description, newUser.ID_Role);
+            var token = GenerateJwtToken(newUser.ID_User, newUser.Name, newUser.Description, newUser.ID_Role);
 
             return Ok(new
             {
@@ -60,6 +60,21 @@ namespace MovieApi.Controllers
                 }
             });
         }
+
+        [HttpGet]
+        [Route("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            return await _MovieService.GetAllUsersAsync();
+        }
+
+        [HttpGet]
+        [Route("GetChatWithUser/{SenderId}/{ReceiverId}")]
+        public async Task<IActionResult> GetChatWithUser(int SenderId, int ReceiverId)
+        { 
+            return await _MovieService.GetChatWithUserByID(SenderId, ReceiverId);
+        }
+
         [HttpGet]
         [Route("GetAllMovies")]
         public async Task<IActionResult> GetAllMovies()
@@ -98,7 +113,7 @@ namespace MovieApi.Controllers
             };
             return await _MovieService.UpdateMovieAsync(id, MovieInfo);
         }
-        private string GenerateJwtToken(string username, string description, int role)
+        private string GenerateJwtToken(int id,string username, string description, int role)
         {
             var jwtConfig = _configuration.GetSection("Jwt");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig["Key"]));
@@ -108,8 +123,8 @@ namespace MovieApi.Controllers
             {
         new Claim(ClaimTypes.Name, username),
         new Claim("ID_Role", role.ToString()),
-        new Claim("Description", description)//,
-        //new Claim("", )
+        new Claim("Description", description),
+        new Claim(ClaimTypes.NameIdentifier, id.ToString())
 
     };
 

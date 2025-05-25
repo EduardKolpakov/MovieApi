@@ -13,5 +13,7 @@ namespace MovieApi.DataBaseContext
         public DbSet<Logins> Logins { get; set; }
         public DbSet<Roles> Roles { get; set; }
         public DbSet<Movies> Movies { get; set; }
+        public DbSet<MovieChatMessage> MovieChatMessages { get; set; }
+        public DbSet<PrivateChatMessage> PrivateChatMessages { get; set; }
     }
 }

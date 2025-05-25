@@ -4,6 +4,7 @@ using MovieApi.DataBaseContext;
 using MovieApi.Interface;
 using MovieApi.Model;
 using MovieApi.Requests;
+using NuGet.Protocol.Plugins;
 
 namespace MovieApi.Services
 {
@@ -18,8 +19,12 @@ namespace MovieApi.Services
         public async Task<AuthUser> Authorization(LoginModel data)
         {
             var log = await _context.Logins.Where(x => x.login == data.Login && x.password == data.Password).FirstOrDefaultAsync();
-            Users user = await _context.Users.Where(x => x.ID_User == log.ID_User).FirstOrDefaultAsync();
-            AuthUser au = new AuthUser()
+            if (log == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+            var user = await _context.Users.Where(x => x.ID_User == log.ID_User).FirstOrDefaultAsync();
+            AuthUser au = new ()
             {
                 ID_User = log.ID_User,
                 Name = user.Name,
@@ -81,7 +86,7 @@ namespace MovieApi.Services
             return movie;
         }
 
-        public async Task<Users> Registration(AuthUser user)
+        public async Task<Users> Registration(RegistrationRequestModel user)
         {
             Users us = new Users() {
             Name = user.Name,
@@ -115,6 +120,27 @@ namespace MovieApi.Services
             movie.Rating = MovieInfo.Rating;
             await _context.SaveChangesAsync();
             return movie;
+        }
+
+        public async Task<IActionResult> GetAllUsersAsync()
+        {
+            var users = await _context.Users.ToListAsync();
+            return new OkObjectResult( new
+                { users = users,
+                status = true
+            }
+                );
+        }
+
+        public async Task<IActionResult> GetChatWithUserByID(int SenderId, int ReceiverId)
+        {
+            bool result = await _context.PrivateChatMessages.AnyAsync(c => (c.SenderId == SenderId.ToString() && c.ReceiverId == ReceiverId.ToString()) ||
+            (c.SenderId == ReceiverId.ToString() && c.ReceiverId == SenderId.ToString()));
+            return new OkObjectResult(new
+            {
+                result = result,
+                status = true
+            });
         }
     }
 }

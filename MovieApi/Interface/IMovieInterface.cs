@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieApi.Model;
 using MovieApi.Requests;
+using NuGet.Protocol.Plugins;
 
 namespace MovieApi.Interface
 {
@@ -12,6 +13,8 @@ namespace MovieApi.Interface
         Task<Movies> UpdateMovieAsync(int id, CreateNewMovie MovieInfo);
         Task<bool> DeleteMovieAsync(int id);
         Task<AuthUser> Authorization(LoginModel data);
-        Task<Users> Registration(AuthUser user);
+        Task<Users> Registration(RegistrationRequestModel user);
+        Task<IActionResult> GetAllUsersAsync();
+        Task<IActionResult> GetChatWithUserByID(int SenderId, int ReceiverId);
     }
 }
