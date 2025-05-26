@@ -142,5 +142,42 @@ namespace MovieApi.Services
                 status = true
             });
         }
+
+        public async Task<IActionResult> GetUserByID(int id)
+        {
+            var us = await _context.Users.Where(x => x.ID_User == id).FirstOrDefaultAsync();
+            return new OkObjectResult(new
+            {
+                user = us,
+                status = true,
+            });
+        }
+
+        public async Task<IActionResult> GetChatHistory(int id)
+        {
+            var result = await _context.MovieChatMessages.Where(x => x.MovieId == id).OrderBy(x => x.Timestamp).ToListAsync();
+            return new OkObjectResult(new
+            {
+                messages = result,
+                status = true
+            });
+        }
+
+        public async Task<IActionResult> DeleteMovieMessage(int id)
+        {
+            var msg = await _context.MovieChatMessages.Where(x => x.Id == id).FirstOrDefaultAsync();
+            _context.MovieChatMessages.Remove(msg);
+            return new OkObjectResult(new { 
+                status = true
+            });
+        }
+
+        public async Task<IActionResult> UpdateMovieMessage(int id, string newMsg)
+        {
+            var msg = await _context.MovieChatMessages.Where(x => x.Id == id).FirstOrDefaultAsync();
+            msg.Message = newMsg;
+            await _context.SaveChangesAsync();
+            return new OkObjectResult(new {status = true});
+        }
     }
 }

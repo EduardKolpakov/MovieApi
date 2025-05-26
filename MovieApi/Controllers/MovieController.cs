@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.IdentityModel.Tokens;
 using MovieApi.Interface;
 using MovieApi.Model;
@@ -62,6 +63,13 @@ namespace MovieApi.Controllers
         }
 
         [HttpGet]
+        [Route("GetUserByID/{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        { 
+            return await _MovieService.GetUserByID(id);
+        }
+
+        [HttpGet]
         [Route("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -113,6 +121,28 @@ namespace MovieApi.Controllers
             };
             return await _MovieService.UpdateMovieAsync(id, MovieInfo);
         }
+
+        [HttpGet]
+        [Route("GetChatHistory/{id}")]
+        public async Task<IActionResult> GetChatHistory(int id)
+        {
+            return await _MovieService.GetChatHistory(id);
+        }
+
+        [HttpPut]
+        [Route("UpdateMovieMessage/{id}")]
+        public async Task<IActionResult> UpdateMovieMessage(int id, [FromBody] string message)
+        { 
+            return await _MovieService.UpdateMovieMessage(id, message);
+        }
+
+        [HttpDelete]
+        [Route("DeleteMovieMessage/{id}")]
+        public async Task<IActionResult> DeleteMovieMessage(int id)
+        { 
+            return await _MovieService.DeleteMovieMessage(id);
+        }
+
         private string GenerateJwtToken(int id,string username, string description, int role)
         {
             var jwtConfig = _configuration.GetSection("Jwt");

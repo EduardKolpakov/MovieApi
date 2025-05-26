@@ -2,6 +2,7 @@
 using MovieApi.Model;
 using MovieApi.Requests;
 using NuGet.Protocol.Plugins;
+using System.Runtime.CompilerServices;
 
 namespace MovieApi.Interface
 {
@@ -16,5 +17,9 @@ namespace MovieApi.Interface
         Task<Users> Registration(RegistrationRequestModel user);
         Task<IActionResult> GetAllUsersAsync();
         Task<IActionResult> GetChatWithUserByID(int SenderId, int ReceiverId);
+        Task<IActionResult> GetUserByID(int id);
+        Task<IActionResult> GetChatHistory(int id);
+        Task<IActionResult> DeleteMovieMessage(int id);
+        Task<IActionResult> UpdateMovieMessage(int id, string newMsg);
     }
 }

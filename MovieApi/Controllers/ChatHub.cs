@@ -68,17 +68,13 @@ namespace MovieApi.Controllers
             _context.PrivateChatMessages.Add(msg);
             await _context.SaveChangesAsync();
 
-            await Clients.Group($"private_{GetPrivateChatId(fromId, toId)}")
-                         .SendAsync("ReceivePrivateMessage", fromName, message, msg.Timestamp.ToString("HH:mm"));
+            await Clients.Group($"{GetPrivateChatId(fromId, toId)}")
+                         .SendAsync("ReceivePrivateMessage", fromId, fromName, message, msg.Timestamp.ToString("HH:mm"));
         }
-
-        // Присоединение к приватному чату
         public async Task JoinPrivateChat(string userId, string otherUserId)
         {
             var chatId = GetPrivateChatId(userId, otherUserId);
             await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
-
-            // Загрузить историю переписки
             var history = await _context.PrivateChatMessages
                 .Where(m => (m.SenderId == userId && m.ReceiverId == otherUserId) ||
                             (m.SenderId == otherUserId && m.ReceiverId == userId))
@@ -88,7 +84,7 @@ namespace MovieApi.Controllers
 
             foreach (var msg in history)
             {
-                await Clients.Caller.SendAsync("ReceivePrivateMessage",
+                await Clients.Caller.SendAsync("ReceivePrivateMessage", msg.SenderId,
                     msg.SenderName, msg.Message, msg.Timestamp.ToString("HH:mm"));
             }
         }
