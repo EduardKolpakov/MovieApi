@@ -28,7 +28,29 @@ namespace MovieApi.Controllers
             _context.MovieChatMessages.Add(msg);
             await _context.SaveChangesAsync();
 
-            await Clients.Group($"movie_{movieId}").SendAsync("ReceiveMovieMessage", userName, message, msg.Timestamp.ToString("HH:mm"));
+            await Clients.Group($"movie_{movieId}").SendAsync("ReceiveMovieMessage", userName, msg, msg.Timestamp.ToString("HH:mm"));
+        }
+
+        public async Task DeleteMovieMessage(int messageId)
+        {
+            var message = await _context.MovieChatMessages.FindAsync(messageId);
+            if (message != null)
+            {
+                _context.MovieChatMessages.Remove(message);
+                await _context.SaveChangesAsync();
+                await Clients.Group($"movie_{message.MovieId}").SendAsync("OnMessageDeleted", messageId);
+            }
+        }
+
+        public async Task UpdateMovieMessage(int messageId, string newText)
+        {
+            var message = await _context.MovieChatMessages.FindAsync(messageId);
+            if (message != null && !string.IsNullOrWhiteSpace(newText))
+            {
+                message.Message = newText;
+                await _context.SaveChangesAsync();
+                await Clients.Group($"movie_{message.MovieId}").SendAsync("OnMessageUpdated", messageId, newText);
+            }
         }
 
         // Присоединение к чату фильма
@@ -45,7 +67,7 @@ namespace MovieApi.Controllers
 
             foreach (var msg in history)
             {
-                await Clients.Caller.SendAsync("ReceiveMovieMessage", msg.UserName, msg.Message, msg.Timestamp.ToString("o"));
+                await Clients.Caller.SendAsync("ReceiveMovieMessage", msg.UserName, msg, msg.Timestamp.ToString("o"));
             }
         }
 
